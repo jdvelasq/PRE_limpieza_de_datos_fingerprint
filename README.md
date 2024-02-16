@@ -1,2 +1,1 @@
-# presencial_limpieza_de_datos_fingerprint
 Taller presencial evaluable

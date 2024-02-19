@@ -7,6 +7,18 @@ import clean_data
 
 clean_data.main("input.txt", "output.txt")
 
+if not os.path.exists("test.csv"):
+    raise FileNotFoundError("File 'test.csv' not found")
+
+test = pd.read_csv("test.csv", index_col=None)
+
+assert test.loc[0, "fingerprint"] == "adhoc queri"
+assert test.loc[6, "fingerprint"] == "agricultur product"
+assert test.loc[11, "fingerprint"] == "airlin"
+assert test.loc[12, "fingerprint"] == "airlin compani"
+assert test.loc[16, "fingerprint"] == "analyt applic"
+assert test.loc[25, "fingerprint"] == "analyt model"
+
 #
 # Retorna error si la carpeta output/ no existe
 if not os.path.exists("output.txt"):

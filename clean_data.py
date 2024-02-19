@@ -45,6 +45,7 @@ def main(input_file, output_file):
     df = load_data(input_file)
     df = create_fingerprint(df)
     df = generate_cleaned_column(df)
+    df.to_csv("test.csv", index=False)
     save_data(df, output_file)
 
 

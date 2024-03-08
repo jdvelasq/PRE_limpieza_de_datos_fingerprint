@@ -6,7 +6,8 @@ import pandas as pd
 
 def load_data(input_file):
     """Lea el archivo usando pandas y devuelva un DataFrame"""
-
+    data= pd.read_csv(input_file, sep="\t")
+    return data
 
 def create_fingerprint(df):
     """Cree una nueva columna en el DataFrame que contenga el fingerprint de la columna 'text'"""
@@ -20,12 +21,27 @@ def create_fingerprint(df):
     # 7. Transforme cada palabra con un stemmer de Porter
     # 8. Ordene la lista de tokens y remueve duplicados
     # 9. Convierta la lista de tokens a una cadena de texto separada por espacios
+    df = df.copy()
 
+    df["fingerprint"] = df["text"]
+    df["fingerprint"] = df["fingerprint"].str.strip().str.lower().str.replace("-","").str.replace(".","").str.split()
+    df["fingerprint"] = df["fingerprint"].apply(lambda x:[nltk.PorterStemmer().stem(w) for w in x])
+    df["fingerprint"] = df["fingerprint"].apply(lambda x: sorted(set(x))).str.join(" ")
+    return df
 
 def generate_cleaned_column(df):
     """Crea la columna 'cleaned' en el DataFrame"""
 
     df = df.copy()
+    fingerprints=df.sort_values(by=["fingerprint","text"])
+
+    fingerprints=df.groupby("fingerprint").first().reset_index()
+
+    fingerprints=fingerprints.set_index("fingerprint")["text"].to_dict()
+    fingerprints.sort_values(by="fingerprint", inplace=False)
+    
+    df["cleaned"]=df["fingerprint"].map(fingerprints)
+    return df
 
     # 1. Ordene el dataframe por 'fingerprint' y 'text'
     # 2. Seleccione la primera fila de cada grupo de 'fingerprint'
@@ -37,6 +53,10 @@ def save_data(df, output_file):
     """Guarda el DataFrame en un archivo"""
     # Solo contiene una columna llamada 'texto' al igual
     # que en el archivo original pero con los datos limpios
+    df=df.copy()
+    df=df[["cleaned"]]
+    df=df.rename(columns={"cleaned": "text"})
+    df.to_csv(output_file, sep="\t", index=False)
 
 
 def main(input_file, output_file):

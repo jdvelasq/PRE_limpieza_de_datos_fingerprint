@@ -9,7 +9,6 @@ def load_data(input_file):
     df = pd.read_csv(input_file)
     return df
 
-
     # 1. Copie la columna 'text' a la columna 'fingerprint'
     # 2. Remueva los espacios en blanco al principio y al final de la cadena
     # 3. Convierta el texto a minúsculas
@@ -39,7 +38,6 @@ def create_fingerprint(df):
     df["key"] = df["key"].str.join(" ")
 
     return df
-
 
 #print(load_data("input.txt"))
 
